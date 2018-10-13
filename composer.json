@@ -1,0 +1,17 @@
+{
+    "name": "ailixter/gears-purl",
+    "description": "Description of project Gears.PURL.",
+    "authors": [
+        {
+            "name": "ailixter",
+            "email": "ailixter@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ailixter\\Gears\\": "src/"
+        }
+    },
+
+    "require": {}
+}
