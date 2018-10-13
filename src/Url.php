@@ -19,16 +19,10 @@ use Ailixter\Gears\Url\ParsedData;
  * @property string $fragment
  * @author AII (Alexey Ilyin)
  */
-class Url 
+class Url extends ParsedData
 {
-    /**
-     * @var ParsedData
-     */
-    protected $parsed;
-
     function __construct($data = [])
     {
-        $this->parsed = new ParsedData();
         $this->set($data);
     }
 
@@ -37,7 +31,7 @@ class Url
         if (!is_array($data)) {
             $data = $this->parseUrl($data);
         }
-        foreach ($this->parsed->keys() as $key) {
+        foreach ($this->keys() as $key) {
             $this->$key = isset($data[$key]) ? $data[$key] : null;
         }
         return $this;
@@ -48,35 +42,10 @@ class Url
         $this->set([]);
     }
 
-    public function assign(Url $url)
-    {
-        $this->set(get_object_vars($url->parsed));
-    }
-
-    public function __get($key)
-    {
-        $method = "get{$key}";
-        return method_exists($this, $method) ? $this->$method() : $this->parsed->$key;
-    }
-
-    public function __isset($key)
-    {
-        return !is_null($this->$key);
-    }
-
-    public function __set($key, $value)
-    {
-        if (!property_exists($this->parsed, $key)) {
-            throw new RuntimeException();
-        }
-        $method = "set{$key}";
-        method_exists($this, $method) ? $this->$method($value) : $this->parsed->$key = $value;
-    }
-
-    public function __unset($key)
-    {
-        $this->__set($key, null);
-    }
+//    public function assign(Url $url)
+//    {
+//        $this->set(get_object_vars($url->parsed));
+//    }
 
     public function __toString()
     {
@@ -138,7 +107,7 @@ class Url
         if (!is_array($data)) {
             $data = $this->parseQuery($data);
         }
-        $this->parsed->query = $data;
+        $this->query = $data; // <==
     }
 
     protected function buildQuery(array $data)
