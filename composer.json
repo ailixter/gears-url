@@ -1,6 +1,6 @@
 {
-    "name": "ailixter/gears-purl",
-    "description": "Description of project Gears.PURL.",
+    "name": "ailixter/gears-url",
+    "description": "Description of project Gears.URL.",
     "authors": [
         {
             "name": "ailixter",
@@ -13,5 +13,18 @@
         }
     },
 
-    "require": {}
+    "config" : {
+        "optimize-autoloader": true
+    },
+
+    "repositories": [
+        {
+            "type": "git",
+            "url": "file:///C:/Work/php/Gears.Overloading"
+        }
+    ],
+
+    "require": {
+        "ailixter/gears-overloading": "master-dev"
+    }
 }

@@ -31,7 +31,7 @@ class Url extends ParsedData
         if (!is_array($data)) {
             $data = $this->parseUrl($data);
         }
-        foreach ($this->keys() as $key) {
+        foreach ($this->propertyKeys() as $key) {
             $this->$key = isset($data[$key]) ? $data[$key] : null;
         }
         return $this;
@@ -107,7 +107,7 @@ class Url extends ParsedData
         if (!is_array($data)) {
             $data = $this->parseQuery($data);
         }
-        $this->query = $data; // <==
+        $this->propertySet('query', $data);
     }
 
     protected function buildQuery(array $data)
