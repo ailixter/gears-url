@@ -6,6 +6,7 @@
 
 namespace Ailixter\Gears;
 
+use Ailixter\Gears\Exceptions\UrlException;
 use Ailixter\Gears\Url\ParsedData;
 
 /**
@@ -40,12 +41,16 @@ class Url extends ParsedData
     public function clear()
     {
         $this->set([]);
+        return $this;
     }
 
-//    public function assign(Url $url)
-//    {
-//        $this->set(get_object_vars($url->parsed));
-//    }
+    public function assign(Url $url)
+    {
+        foreach ($this->propertyKeys() as $key) {
+            $this->$key = $url->$key;
+        }
+        return $this;
+    }
 
     public function __toString()
     {
@@ -68,6 +73,10 @@ class Url extends ParsedData
             }
         }
         if (isset($this->path)) {
+            $path = $this->path;
+            if ($path[0] !== '/' && isset($this->host)) {
+                $url .= '/';
+            }
             $url .= "{$this->path}";
         }
         if (isset($this->query) and $query = $this->buildQuery($this->query)) {
@@ -79,19 +88,19 @@ class Url extends ParsedData
         return $url;
     }
 
-    public function isValid()
+    public function isConsistent()
     {
-        if (isset($this->host)) {
-            return true;
+        if (!isset($this->host)) {
+            return !isset($this->user) && !isset($this->pass) && !isset($this->port);
         }
-        return !isset($this->user) && !isset($this->pass) && !isset($this->port);
+        return true;
     }
 
     protected function parseUrl($str)
     {
         $data = parse_url((string)$str);
         if (!is_array($data)) {
-            throw new RuntimeException();
+            throw UrlException::forParse($str);
         }
         return $data;
     }
@@ -107,11 +116,30 @@ class Url extends ParsedData
         if (!is_array($data)) {
             $data = $this->parseQuery($data);
         }
-        $this->propertySet('query', $data);
+        $this->propertySet(self::QUERY, $data);
+        return $this;
     }
 
+    protected function issetQuery()
+    {
+        return !!$this->query;
+    }
+    
     protected function buildQuery(array $data)
     {
         return http_build_query($data);
+    }
+
+    public function getQueryParam($param, $default = null)
+    {
+        return isset($this->query[$param]) ? $this->query[$param] : $default;
+    }
+
+    public function setQueryParam($param, $value)
+    {
+        $query = $this->query;
+        $query[$param] = $value;
+        $this->query = $query;
+        return $this;
     }
 }

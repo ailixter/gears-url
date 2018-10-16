@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!--
+(C) 2017, AII (Alexey Ilyin).
+-->
+<phpunit colors="false">
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src</directory>
+            <!-- file>/path/to/file</file>
+            <exclude>
+              <directory suffix=".php">/path/to/files</directory>
+              <file>/path/to/file</file>
+            </exclude -->
+        </whitelist>
+    </filter>
+</phpunit>

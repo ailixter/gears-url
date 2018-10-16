@@ -7,7 +7,8 @@ namespace Ailixter\Gears;
  */
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
-
+    const FULL_URL = 'scheme://user:pass@host:1/path?param=1#fragment';
+    
     /**
      * @var Url
      */
@@ -32,126 +33,185 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Ailixter\Gears\Url::clear
-     * @todo   Implement testClear().
      */
     public function testClear()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->set('https://example.com/path?p=123');
+        $this->assertTrue(isset($this->object->host));
+        $this->assertTrue(isset($this->object->scheme));
+        $this->assertTrue(isset($this->object->path));
+        $this->assertTrue(isset($this->object->query));
+        $this->object->clear();
+        $this->assertEquals('', (string)$this->object);
     }
 
-//    /**
-//     * @covers Ailixter\Gears\Url::set
-//     * @todo   Implement testSet().
-//     */
-//    public function testSet()
-//    {
-//        // Remove the following lines when you implement this test.
-//        $this->markTestIncomplete(
-//            'This test has not been implemented yet.'
-//        );
-//    }
-//
     /**
-     * @covers Ailixter\Gears\Url::assign
-     * @todo   Implement testAssign().
      */
     public function testAssign()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->assertEquals(self::FULL_URL, (string)$this->object->assign((new Url)->set(self::FULL_URL)));
     }
 
-//    /**
-//     * @covers Ailixter\Gears\Url::__get
-//     * @todo   Implement test__get().
-//     */
-//    public function test__get()
-//    {
-//        // Remove the following lines when you implement this test.
-//        $this->markTestIncomplete(
-//            'This test has not been implemented yet.'
-//        );
-//    }
-//
-//    /**
-//     * @covers Ailixter\Gears\Url::__isset
-//     * @todo   Implement test__isset().
-//     */
-//    public function test__isset()
-//    {
-//        // Remove the following lines when you implement this test.
-//        $this->markTestIncomplete(
-//            'This test has not been implemented yet.'
-//        );
-//    }
-//
-//    /**
-//     * @covers Ailixter\Gears\Url::__set
-//     * @todo   Implement test__set().
-//     */
-//    public function test__set()
-//    {
-//        // Remove the following lines when you implement this test.
-//        $this->markTestIncomplete(
-//            'This test has not been implemented yet.'
-//        );
-//    }
-//
-//    /**
-//     * @covers Ailixter\Gears\Url::__unset
-//     * @todo   Implement test__unset().
-//     */
-//    public function test__unset()
-//    {
-//        // Remove the following lines when you implement this test.
-//        $this->markTestIncomplete(
-//            'This test has not been implemented yet.'
-//        );
-//    }
+    private function functionName($param)
+    {
+        static $all ;
+        if (!$all) {
+            $all = array_keys(parse_url(self::FULL_URL));
+        }
+        $param = is_array($param) ? $param : array_map('trim', explode(',', $param));
+        return array_merge(array_fill_keys($all, false), array_fill_keys($param, true));
+    }
 
     public function urlProvider()
     {
         return [
-            ['test'],
-            ['/test/1'],
-            ['../test/1'],
-            ['example.com/test/1?a=1&b=2'],
-            ['//example.com/'],
-            ['//example.com/?a=1&b=2'],
-            ['//example.com/test/1?a=1&b=2'],
-            ['//example.com?a=1&b=2'],
-            ['http://example.com/test/1?a=1&b=2'],
-            ['https://www.example.com/test/1?a=1&b=2#abc'],
-            //['https://госуслуги.рф/тест/1?ж=опа#abc'],
-            //['https://www.example.com/test/1?abc/123&def=456'],
+            ['test', 'path'],
+            ['/test/1', 'path'],
+            ['../test/1', 'path'],
+            ['example.com/test/1?a=1&b=2', 'path,query'],
+            ['example.com:123', 'host,port', '//example.com:123'],
+            ['example.com:123/test/1', 'host,path,port', '//example.com:123/test/1'],
+            ['://example.com', 'path'],
+            [':/example.com', 'path'],
+            ['::example.com', 'path'],
+            ['http:test/1', 'scheme,path'],
+            ['http:../test/1', 'scheme,path'],
+            ['http:/test/1', 'scheme,path'],
+            ['//example.com/', 'host, path'],
+            ['//example.com/?a=1&b=2', 'host, path, query'],
+            ['//example.com/test/1?a=1&b=2', 'host, path, query'],
+            ['//example.com?a=1&b=2', 'host, query'],
+            ['//ailixter@example.com', 'user, host'],
+            ['//ailixter:$123=456@example.com', 'user,pass,host'],
+            ['http://example.com:8080/test/1?a=1&b=2', 'scheme,host,port,path,query'],
+            ['http://example.com/test/1?a=1&b=2', 'scheme,host,path,query'],
+            ['https://www.example.com/test/1?a=1&b=2#abc', 'scheme,host,path,query,fragment'],
+            ['https://госуслуги.рф/тест/1?ж=опа#abc', 'scheme,host,path,query,fragment', 'https://госуслуги.рф/тест/1?%D0%B6=%D0%BE%D0%BF%D0%B0#abc'],
+            ['https://example.com/test/1?abc/123&def=456', 'scheme,host,path,query', 'https://example.com/test/1?abc%2F123=&def=456'],
         ];
     }
 
     /**
      * @dataProvider urlProvider
      */
-    public function test__toString($test)
+    public function test__toString($test, $mask, $expected = null)
     {
         $this->object->set($test);
-        $this->assertEquals($test, (string)$this->object);
+        $mask = $this->functionName($mask);
+        foreach ($mask as $key => $value) {
+            $isset = isset($this->object->$key);
+            if ($value) {
+                $this->assertTrue($isset, $key);
+            } else {
+                $this->assertFalse($isset, $key);
+            }
+        }
+        $this->assertEquals($expected ?: $test, (string)$this->object);
+    }
+
+    public function urlProviderBad()
+    {
+        return [
+            //['not an url'],
+            ['https://example.com:port/1'],
+        ];
     }
 
     /**
-     * @covers Ailixter\Gears\Url::isValid
-     * @todo   Implement testIsValid().
+     * @expectedException \Ailixter\Gears\Exceptions\UrlException
+     * @dataProvider urlProviderBad
      */
-    public function testIsValid()
+    public function test__toStringBad($test)
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $this->object->set($test);
+        $url = (string)$this->object;
+        $this->assertEquals(false, $url);//SIC!
     }
 
+    /**
+     */
+    public function testIsConsistent()
+    {
+        $this->assertTrue($this->object->set(self::FULL_URL)->isConsistent());
+        unset(
+            $this->object->scheme,
+            $this->object->port,
+            $this->object->query,
+            $this->object->fragment
+        );
+        $this->assertTrue($this->object->isConsistent());
+        $this->assertEquals('//user:pass@host/path', (string)$this->object);
+        unset($this->object->host);
+        $this->assertFalse($this->object->isConsistent());
+    }
+
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testGetQueryParamAsProp()
+    {
+        $x = $this->object->queryParam;
+    }
+
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testSetQueryParamAsProp()
+    {
+        $this->object->queryParam = 123;
+    }
+
+    /**
+     */
+    public function testSetQueryParam()
+    {
+        $this->object
+            ->set(self::FULL_URL)
+            ->setQueryParam('int', 123)
+            ->setQueryParam('array', $this->object->query)
+            ;
+        $url = (string)$this->object;
+        $this->assertEquals('scheme://user:pass@host:1/path?param=1&int=123&array%5Bparam%5D=1&array%5Bint%5D=123#fragment', $url);
+
+        return (string)$url;
+    }
+    
+    /**
+     * @depends testSetQueryParam
+     * @param string $url
+     */
+    public function testGetQueryParam($url)
+    {
+        $this->object->set($url);
+        $this->assertEquals('123', $this->object->getQueryParam('int'));
+        $this->assertEquals('123', $this->object->getQueryParam('array')['int']);
+        $this->assertEquals('???', $this->object->getQueryParam('undefined', '???'));
+    }
+
+    public function manualBuildProvider()
+    {
+        $urlx = new Url;
+        $url0 = new Url;
+        $url1 = new Url;
+        $urln = new Url;
+        foreach (Url::propertyKeys() as $key) {
+            $url0->$key = false;
+            $url1->$key = true;
+            $urln->$key = null;
+        }
+        return [
+            [$urlx, '', 'empty'],
+            [$url0, '://:@:/#', 'falses'],
+            [$url1, '1://1:1@1:1/1?1=#1', 'trues'],
+            [$urln, '', 'nulls'],
+        ];
+    }
+
+    /**
+     * @dataProvider manualBuildProvider
+     */
+    public function testManualBuild(Url $url, $expected, $msg)
+    {
+        $this->assertEquals($expected, (string)$url, $msg);
+    }
 }
