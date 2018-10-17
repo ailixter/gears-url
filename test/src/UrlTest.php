@@ -214,4 +214,20 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         self::assertEquals($expected, (string)$url, $msg);
     }
+
+    public function testAutoGetQuery () {
+        self::assertEquals(['x' => 123], $this->object->setQuery(['x' => 123])->getQuery());
+    }
+
+    public function keysProvider () {
+        return array_map(function ($key) { return [$key]; },
+            Url::propertyKeys());
+    }
+    /**
+     * @dataProvider keysProvider
+     */
+    public function testGetSetAll ($key) {
+        $this->object->{'set'.ucfirst($key)}('*'.$key);
+        self::assertEquals($this->object->$key, $this->object->{'get'.ucfirst($key)}());
+    }
 }

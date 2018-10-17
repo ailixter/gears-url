@@ -22,6 +22,8 @@ use Ailixter\Gears\Url\ParsedData;
  */
 class Url extends ParsedData
 {
+    use AutoGetSetProps;
+    
     function __construct($data = [])
     {
         $this->set($data);
