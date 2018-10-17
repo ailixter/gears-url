@@ -37,19 +37,19 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testClear()
     {
         $this->object->set('https://example.com/path?p=123');
-        $this->assertTrue(isset($this->object->host));
-        $this->assertTrue(isset($this->object->scheme));
-        $this->assertTrue(isset($this->object->path));
-        $this->assertTrue(isset($this->object->query));
+        self::assertTrue(isset($this->object->host));
+        self::assertTrue(isset($this->object->scheme));
+        self::assertTrue(isset($this->object->path));
+        self::assertTrue(isset($this->object->query));
         $this->object->clear();
-        $this->assertEquals('', (string)$this->object);
+        self::assertEquals('', (string)$this->object);
     }
 
     /**
      */
     public function testAssign()
     {
-        $this->assertEquals(self::FULL_URL, (string)$this->object->assign((new Url)->set(self::FULL_URL)));
+        self::assertEquals(self::FULL_URL, (string)$this->object->assign((new Url)->set(self::FULL_URL)));
     }
 
     private function functionName($param)
@@ -101,12 +101,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         foreach ($mask as $key => $value) {
             $isset = isset($this->object->$key);
             if ($value) {
-                $this->assertTrue($isset, $key);
+                self::assertTrue($isset, $key);
             } else {
-                $this->assertFalse($isset, $key);
+                self::assertFalse($isset, $key);
             }
         }
-        $this->assertEquals($expected ?: $test, (string)$this->object);
+        self::assertEquals($expected ?: $test, (string)$this->object);
     }
 
     public function urlProviderBad()
@@ -125,24 +125,24 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->set($test);
         $url = (string)$this->object;
-        $this->assertEquals(false, $url);//SIC!
+        self::assertEquals(false, $url);//SIC!
     }
 
     /**
      */
     public function testIsConsistent()
     {
-        $this->assertTrue($this->object->set(self::FULL_URL)->isConsistent());
+        self::assertTrue($this->object->set(self::FULL_URL)->isConsistent());
         unset(
             $this->object->scheme,
             $this->object->port,
             $this->object->query,
             $this->object->fragment
         );
-        $this->assertTrue($this->object->isConsistent());
-        $this->assertEquals('//user:pass@host/path', (string)$this->object);
+        self::assertTrue($this->object->isConsistent());
+        self::assertEquals('//user:pass@host/path', (string)$this->object);
         unset($this->object->host);
-        $this->assertFalse($this->object->isConsistent());
+        self::assertFalse($this->object->isConsistent());
     }
 
     /**
@@ -171,7 +171,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             ->setQueryParam('array', $this->object->query)
             ;
         $url = (string)$this->object;
-        $this->assertEquals('scheme://user:pass@host:1/path?param=1&int=123&array%5Bparam%5D=1&array%5Bint%5D=123#fragment', $url);
+        self::assertEquals('scheme://user:pass@host:1/path?param=1&int=123&array%5Bparam%5D=1&array%5Bint%5D=123#fragment', $url);
 
         return (string)$url;
     }
@@ -183,9 +183,9 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testGetQueryParam($url)
     {
         $this->object->set($url);
-        $this->assertEquals('123', $this->object->getQueryParam('int'));
-        $this->assertEquals('123', $this->object->getQueryParam('array')['int']);
-        $this->assertEquals('???', $this->object->getQueryParam('undefined', '???'));
+        self::assertEquals('123', $this->object->getQueryParam('int'));
+        self::assertEquals('123', $this->object->getQueryParam('array')['int']);
+        self::assertEquals('???', $this->object->getQueryParam('undefined', '???'));
     }
 
     public function manualBuildProvider()
@@ -212,6 +212,6 @@ class UrlTest extends \PHPUnit_Framework_TestCase
      */
     public function testManualBuild(Url $url, $expected, $msg)
     {
-        $this->assertEquals($expected, (string)$url, $msg);
+        self::assertEquals($expected, (string)$url, $msg);
     }
 }
