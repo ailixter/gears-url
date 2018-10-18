@@ -22,13 +22,21 @@ use Ailixter\Gears\Url\ParsedData;
  */
 class Url extends ParsedData
 {
+
     use AutoGetSetProps;
-    
+
+    /**
+     * @param string|array $data
+     */
     function __construct($data = [])
     {
         $this->set($data);
     }
 
+    /**
+     * @param string|array $data
+     * @return $this
+     */
     public function set($data)
     {
         if (!is_array($data)) {
@@ -93,7 +101,9 @@ class Url extends ParsedData
     public function isConsistent()
     {
         if (!isset($this->host)) {
-            return !isset($this->user) && !isset($this->pass) && !isset($this->port);
+            return !isset($this->user) 
+                && !isset($this->pass)
+                && !isset($this->port);
         }
         return true;
     }
@@ -126,7 +136,7 @@ class Url extends ParsedData
     {
         return !!$this->query;
     }
-    
+
     protected function buildQuery(array $data)
     {
         return http_build_query($data);
@@ -144,4 +154,5 @@ class Url extends ParsedData
         $this->query = $query;
         return $this;
     }
+
 }

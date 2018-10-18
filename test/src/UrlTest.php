@@ -7,8 +7,9 @@ namespace Ailixter\Gears;
  */
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
+
     const FULL_URL = 'scheme://user:pass@host:1/path?param=1#fragment';
-    
+
     /**
      * @var Url
      */
@@ -54,7 +55,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
     private function functionName($param)
     {
-        static $all ;
+        static $all;
         if (!$all) {
             $all = array_keys(parse_url(self::FULL_URL));
         }
@@ -86,8 +87,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             ['http://example.com:8080/test/1?a=1&b=2', 'scheme,host,port,path,query'],
             ['http://example.com/test/1?a=1&b=2', 'scheme,host,path,query'],
             ['https://www.example.com/test/1?a=1&b=2#abc', 'scheme,host,path,query,fragment'],
-            ['https://госуслуги.рф/тест/1?ж=опа#abc', 'scheme,host,path,query,fragment', 'https://госуслуги.рф/тест/1?%D0%B6=%D0%BE%D0%BF%D0%B0#abc'],
-            ['https://example.com/test/1?abc/123&def=456', 'scheme,host,path,query', 'https://example.com/test/1?abc%2F123=&def=456'],
+            ['https://госуслуги.рф/тест/1?ж=опа#abc', 'scheme,host,path,query,fragment',
+                'https://госуслуги.рф/тест/1?%D0%B6=%D0%BE%D0%BF%D0%B0#abc'],
+            ['https://example.com/test/1?abc/123&def=456', 'scheme,host,path,query',
+                'https://example.com/test/1?abc%2F123=&def=456'],
         ];
     }
 
@@ -125,7 +128,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->set($test);
         $url = (string)$this->object;
-        self::assertEquals(false, $url);//SIC!
+        self::assertEquals(false, $url); //SIC!
     }
 
     /**
@@ -169,13 +172,13 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             ->set(self::FULL_URL)
             ->setQueryParam('int', 123)
             ->setQueryParam('array', $this->object->query)
-            ;
+        ;
         $url = (string)$this->object;
         self::assertEquals('scheme://user:pass@host:1/path?param=1&int=123&array%5Bparam%5D=1&array%5Bint%5D=123#fragment', $url);
 
         return (string)$url;
     }
-    
+
     /**
      * @depends testSetQueryParam
      * @param string $url
@@ -215,19 +218,25 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertEquals($expected, (string)$url, $msg);
     }
 
-    public function testAutoGetQuery () {
+    public function testAutoGetQuery()
+    {
         self::assertEquals(['x' => 123], $this->object->setQuery(['x' => 123])->getQuery());
     }
 
-    public function keysProvider () {
-        return array_map(function ($key) { return [$key]; },
-            Url::propertyKeys());
+    public function keysProvider()
+    {
+        return array_map(function ($key) {
+            return [$key];
+        }, Url::propertyKeys());
     }
+
     /**
      * @dataProvider keysProvider
      */
-    public function testGetSetAll ($key) {
-        $this->object->{'set'.ucfirst($key)}('*'.$key);
-        self::assertEquals($this->object->$key, $this->object->{'get'.ucfirst($key)}());
+    public function testGetSetAll($key)
+    {
+        $this->object->{'set' . ucfirst($key)}('*' . $key);
+        self::assertEquals($this->object->$key, $this->object->{'get' . ucfirst($key)}());
     }
+
 }
