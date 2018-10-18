@@ -20,7 +20,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "file:///C:/Work/php/Gears.Overloading"
+            "url": "https://github.com/ailixter/gears-overloading.git"
         }
     ],
 
