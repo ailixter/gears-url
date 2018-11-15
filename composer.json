@@ -22,9 +22,14 @@
             "type": "git",
             "url": "https://github.com/ailixter/gears-overloading.git"
         }
+        ,{
+            "type": "git",
+            "url": "https://github.com/ailixter/gears.git"
+        }
     ],
 
     "require": {
         "ailixter/gears-overloading": "master-dev"
+        ,"ailixter/gears": "master-dev"
     }
 }

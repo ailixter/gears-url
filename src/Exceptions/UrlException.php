@@ -9,7 +9,7 @@ namespace Ailixter\Gears\Exceptions;
 /**
  * @author AII (Alexey Ilyin)
  */
-class UrlException extends ExceptionBase
+class UrlException extends Exception
 {
 
     public static function forParse($url)

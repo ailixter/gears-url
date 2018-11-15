@@ -148,19 +148,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         self::assertFalse($this->object->isConsistent());
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
     public function testGetQueryParamAsProp()
     {
+        self::expectException(\PHPUnit_Framework_Error::class);
+        self::expectException(\ArgumentCountError::class);
         $x = $this->object->queryParam;
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
     public function testSetQueryParamAsProp()
     {
+        self::expectException(\PHPUnit_Framework_Error::class);
+        self::expectException(\ArgumentCountError::class);
         $this->object->queryParam = 123;
     }
 
