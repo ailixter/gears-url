@@ -30,7 +30,8 @@
     ],
 
     "require": {
+        "php": "^7",
+        "ailixter/gears": "master-dev",
         "ailixter/gears-overloading": "master-dev"
-        ,"ailixter/gears": "master-dev"
     }
 }
